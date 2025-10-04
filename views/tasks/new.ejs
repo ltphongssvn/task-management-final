@@ -1,0 +1,188 @@
+<!-- /home/lenovo/code/ltphongssvn/task-management-final/views/tasks/new.ejs -->
+<!-- Form for creating a new task -->
+
+<h2>Create New Task</h2>
+
+<style>
+    .task-form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #555;
+        font-weight: 500;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    button {
+        width: 100%;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        background: #e0e0e0;
+        color: #333;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-left: 1rem;
+    }
+
+    .error-list {
+        background: #fee;
+        border: 1px solid #fcc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .error-list ul {
+        list-style-position: inside;
+        color: #c00;
+    }
+
+    .form-footer {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+</style>
+
+<div class="task-form">
+    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+        <div class="error-list">
+            <ul>
+                <% errors.forEach(error => { %>
+                    <li><%= error.msg %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <form method="POST" action="/tasks">
+        <input type="hidden" name="_csrf" value="<%= _csrf %>">
+
+        <div class="form-group">
+            <label for="title">Task Title *</label>
+            <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="<%= typeof formData !== 'undefined' && formData.title ? formData.title : '' %>"
+                    required
+                    minlength="3"
+                    maxlength="100"
+                    placeholder="Enter a descriptive title for your task"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+                    id="description"
+                    name="description"
+                    maxlength="1000"
+                    placeholder="Add any additional details or notes about this task"
+            ><%= typeof formData !== 'undefined' && formData.description ? formData.description : '' %></textarea>
+            <div class="help-text">Optional - provide more context about the task</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="status">Status *</label>
+                <select id="status" name="status" required>
+                    <option value="pending" <%= (typeof formData !== 'undefined' && formData.status === 'pending') || !formData ? 'selected' : '' %>>Pending</option>
+                    <option value="in-progress" <%= typeof formData !== 'undefined' && formData.status === 'in-progress' ? 'selected' : '' %>>In Progress</option>
+                    <option value="completed" <%= typeof formData !== 'undefined' && formData.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Priority *</label>
+                <select id="priority" name="priority" required>
+                    <option value="1" <%= typeof formData !== 'undefined' && formData.priority === '1' ? 'selected' : '' %>>1 - Low</option>
+                    <option value="2" <%= typeof formData !== 'undefined' && formData.priority === '2' ? 'selected' : '' %>>2 - Medium-Low</option>
+                    <option value="3" <%= (typeof formData !== 'undefined' && formData.priority === '3') || !formData ? 'selected' : '' %>>3 - Medium</option>
+                    <option value="4" <%= typeof formData !== 'undefined' && formData.priority === '4' ? 'selected' : '' %>>4 - Medium-High</option>
+                    <option value="5" <%= typeof formData !== 'undefined' && formData.priority === '5' ? 'selected' : '' %>>5 - High</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="dueDate">Due Date</label>
+            <input
+                    type="datetime-local"
+                    id="dueDate"
+                    name="dueDate"
+                    value="<%= typeof formData !== 'undefined' && formData.dueDate ? formData.dueDate : '' %>"
+            >
+            <div class="help-text">Optional - when should this task be completed?</div>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags</label>
+            <input
+                    type="text"
+                    id="tags"
+                    name="tags"
+                    value="<%= typeof formData !== 'undefined' && formData.tags ? formData.tags : '' %>"
+                    placeholder="Enter tags separated by commas (e.g., work, urgent, project-x)"
+            >
+            <div class="help-text">Optional - organize tasks with tags</div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit">Create Task</button>
+            <a href="/tasks" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
