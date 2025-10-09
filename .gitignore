@@ -11,3 +11,11 @@ build/
 *.tmp
 .env.local
 .env.*.local
+
+# Test files
+test-*.js
+cookies.txt
+
+# Build scripts
+build-tailwind.js
+tailwind.css
