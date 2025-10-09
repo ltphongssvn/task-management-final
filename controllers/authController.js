@@ -10,7 +10,7 @@ const { getToken } = require('host-csrf'); // Import getToken from host-csrf
 exports.getRegister = (req, res) => {
     res.render('auth/register', {
         title: 'Register - Task Management',
-        _csrf: getToken(req, res) // Use getToken instead of req.csrfToken()
+        _csrf: process.env.CSRF_DISABLED === "true" ? "" : getToken(req, res) // Use getToken instead of req.csrfToken()
     });
 };
 
@@ -54,7 +54,7 @@ exports.postRegister = [
                     title: 'Register - Task Management',
                     errors: errors.array(),
                     formData: req.body, // Send back the form data for user convenience
-                    _csrf: getToken(req, res) // Use getToken
+                    _csrf: process.env.CSRF_DISABLED === "true" ? "" : getToken(req, res) // Use getToken
                 });
             }
 
@@ -103,7 +103,7 @@ exports.postRegister = [
 exports.getLogin = (req, res) => {
     res.render('auth/login', {
         title: 'Login - Task Management',
-        _csrf: getToken(req, res) // Use getToken
+        _csrf: process.env.CSRF_DISABLED === "true" ? "" : getToken(req, res)
     });
 };
 
@@ -132,7 +132,7 @@ exports.postLogin = [
                 title: 'Login - Task Management',
                 errors: errors.array(),
                 formData: req.body,
-                _csrf: getToken(req, res) // Use getToken
+                _csrf: process.env.CSRF_DISABLED === "true" ? "" : getToken(req, res) // Use getToken
             });
         }
 

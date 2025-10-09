@@ -32,11 +32,12 @@
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <a href="/tasks/<%= task._id %>/edit" 
+                            <a href="/tasks/edit/<%= task._id %>" 
                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
                                 Edit
                             </a>
-                            <form action="/tasks/<%= task._id %>/delete" method="POST" class="inline">
+                            <form action="/tasks/delete/<%= task._id %>" method="POST" class="inline">
+                                <input type="hidden" name="_csrf" value="<%= _csrf %>">
                                 <button type="submit" 
                                         class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
                                         onclick="return confirm('Are you sure?')">

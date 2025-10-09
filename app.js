@@ -91,6 +91,13 @@ if (app.get('env') === 'production') {
 
 // Configure CSRF options
 // The cookie configuration here must align with cookie-parser's capabilities
+// Skip CSRF in test environment
+if (process.env.CSRF_DISABLED === "true") {
+    app.use((req, res, next) => {
+        res.locals._csrf = "";
+        next();
+    });
+} else {
 const csrf_options = {
     development_mode: csrf_development_mode,
     protected_operations: ['POST', 'PUT', 'PATCH', 'DELETE'],
@@ -108,6 +115,7 @@ const csrf_options = {
 };
 
 app.use(csrf(csrf_options));
+}
 
 // Make user and flash messages available to all views
 // This middleware runs for every request and sets local variables that all views can access
@@ -119,11 +127,25 @@ app.use((req, res, next) => {
 
     // Generate CSRF token using host-csrf's getToken function
     // The getToken function needs the request and response objects
-    try {
-        res.locals._csrf = getToken(req, res);
-    } catch (err) {
-        console.error('CSRF token generation error:', err);
-        res.locals._csrf = ''; // Fallback to empty string if token generation fails
+    if (process.env.CSRF_DISABLED !== "true") {
+        try {
+            res.locals._csrf = getToken(req, res);
+        } catch (err) {
+            console.error("CSRF token generation error:", err);
+            res.locals._csrf = "";
+        }
+    } else {
+        res.locals._csrf = "";
+    }
+    if (process.env.CSRF_DISABLED !== "true") {
+        try {
+            res.locals._csrf = getToken(req, res);
+        } catch (err) {
+            console.error("CSRF token generation error:", err);
+            res.locals._csrf = "";
+        }
+    } else {
+        res.locals._csrf = "";
     }
 
     next();
@@ -215,6 +237,7 @@ app.get('/', (req, res) => {
             }
             a:hover { transform: translateY(-2px); }
         </style>
+        <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
         <div class="container">
@@ -304,6 +327,7 @@ app.use((err, req, res, next) => {
                 color: #333;
             }
         </style>
+        <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
         <div class="error-container">
